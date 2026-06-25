@@ -1,179 +1,64 @@
-# ---------------------------------------------------------------------------- #
-#                                                                              #
-# 	Module:       main.py                                                      #
-# 	Authors:      Dillys                                                    #
-# 	Created:      6/23/2026, 11:19:15 AM                                       #
-# 	Description:  V5 project                                                   #
-#                                                                              #
-# ---------------------------------------------------------------------------- #
-
-# Library imports
-from vex import *
-import math
-
 """
     Group: 2
     Members: Norvisi, Divine, Wundabli, Dillys
+ we discovered that VEX V5 does not user modules so to fix this issue we added a
+ builder called build_script.py, please upload build.py instead of main.py to vex
+ 
+ to create a build.py from main, please follow these steps:
+ 1. please cd on terminal to src
+ 2. run 'python build_script.py' to generate the build.py file
+ 3. upload build.py to VEX
 
 """
 
-# constants
-DIAMETER = 9.93 # wheel DIAMETER in cm
-BASELINE = 29.4 # baseline measurement in cm 
 
-# Brain should be defined by default
-brain=Brain()
-brain.screen.print("Program running...")
+from menu import *
+from part1_functions import *
+from part2_functions import *
 
-left_motor = Motor(Ports.PORT1)
-right_motor = Motor(Ports.PORT10)
 
-# reverse left motor so both motors move in the same direction
-left_motor.set_reversed(True)
 
-# convert desired distance to angles of rotations for the powered wheels
-def distance_to_degrees(distance):
-    circumference = DIAMETER * math.pi
-    degrees = (distance * 360) / circumference 
-    return degrees
+    
 
-# clamp the motor power at 20%
-def clamp_speed_20(speed):
-    if speed > 20:
-        return 20
-    elif speed < -20:
-        return -20
-    else:
-        return speed
+#=============================main====================================================
+def main():
+ 
+  while(1):
 
-# clamp the motor power at 100%  
-def clamp_speed(speed):
-    if speed > 100:
-        return 100
-    elif speed < -100:
-        return -100
-    else:
-        return speed
+    draw_menu() # menu has 9 buttons
 
-# stop both motors
-def stop_motors():
-    left_motor.stop(BRAKE)
-    right_motor.stop(BRAKE)
+    # rename buttons
+    renameButton(1, "200cm line")
+    renameButton(2, "Turn Left")
+    renameButton(3, "Turn Right")
+    renameButton(4, "Spin 90L")
+    renameButton(5, "Spin 90R")
+    renameButton(6, "House Shape")
+    renameButton(7, "S path 1")
+    renameButton(8, "S path 2")
 
-# stop either right or left motor
-def stop_motor(motor):
-    if motor == LEFT:
-        left_motor.stop(BRAKE)
-    elif motor == RIGHT:
-        right_motor.stop(BRAKE)
-        
-# move robot motors in the forward direction for a specified distance
-def drive_straight(distance, speed):
-    speed = clamp_speed_20(speed)
-    degrees = distance_to_degrees(distance)
-    left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
-    right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-    stop_motors()
+    
 
-# turn robot by some angle in either left or right direction
-def turn(turn_angle, speed,direction):
-    speed = clamp_speed_20(speed)
-    degrees = (2 * BASELINE * turn_angle)/DIAMETER
-    #the directions are reversed because it was observed that the robot direction of rotation of the 
-    #motor shaft either right or left was opposite to the direction of turn of the robot
-    if direction is RIGHT: #  
-        stop_motor(LEFT)
-        right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-        stop_motors()
-    elif direction is LEFT:
-        stop_motor(RIGHT)
-        left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-        stop_motors()
+    button = get_button()
 
-# spin robot on its center by some angle clockwise or anticlockwise
-def spin(degrees, speed,direction):
-    speed = clamp_speed_20(speed)
-    degrees = (BASELINE * degrees)/DIAMETER
-    # the directions are reversed because it was observed that the robot direction of rotation of the 
-    # motor shaft either right or left was opposite to the direction of turn of the robot
-    if direction is RIGHT:
-        left_motor.spin_for(REVERSE, degrees, DEGREES, speed, PERCENT,wait=False)
-        right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-        stop_motors()
-    elif direction is LEFT:
-        left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
-        right_motor.spin_for(REVERSE, degrees, DEGREES, speed, PERCENT,wait=True)
-        stop_motors()
-
-# make the robot draw the outline of a square
-def square_move(distance, speed,direction):
-    angle = 90
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-
-# make the robot draw the outline of a house 
-def house_move(distance, speed,direction):
-    drive_straight(distance,speed)
-    turn(90,speed,direction)
-    drive_straight(distance,speed)
-    turn(30,speed,direction)
-    drive_straight(distance,speed)
-    turn(120,speed,direction)
-    drive_straight(distance,speed)
-    turn(30,speed,direction)
-    drive_straight(distance,speed)
-    turn(90,speed,direction)
-
-# make the robot draw the outline of a pentagon
-def pentagon(distance, speed,direction):
-    angle = 78
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-    drive_straight(distance,speed)
-    turn(angle,speed,direction)
-
-# run specific program
-brain.screen.new_line()
-program = 'square'
-if program == 'straight_line':
-    distance = 200
-    brain.screen.print("Driving straight for %d cm"%(distance))
-    drive_straight(distance, 20)
-elif program == 'turn':
-    turn_angle = 90
-    direction = LEFT
-    brain.screen.print("Turning %d degrees"%(turn_angle))
-    turn(turn_angle,20,direction)
-elif program == 'spin':
-    turn_angle = 360
-    direction = LEFT
-    brain.screen.print("Spin %d degrees"%(turn_angle))
-    spin(turn_angle,20,direction)
-elif program == 'square':
-    direction = LEFT
-    brain.screen.print("Draw square")
-    square_move(90, 20, direction)
-elif program == 'house':
-    direction = LEFT
-    brain.screen.print("Draw house")
-    house_move(90, 20, direction)
-    brain.screen.new_line()
-elif program == 'pentagon':
-    direction = LEFT
-    brain.screen.print("Draw pentagon")
-    pentagon(90, 20, direction)
-
-brain.screen.new_line()
-brain.screen.print("Finished\n")
+    if button == 1:
+        programSelector('straight_line')
+    elif button == 2:
+        programSelector('turnL')
+    elif button == 3:
+        programSelector('turnR')
+    elif button == 4:
+        programSelector('spinL')
+    elif button == 5:
+        programSelector('spinR')
+    elif button == 6:
+        programSelector('house')
+    elif button == 7:
+        move_in_s_shape()
+    elif button == 8:
+        move_in_s_shape_with_tracking()
+    elif button == 9:
+        NOPROGRAM(9)
+        # pass
+ 
+main()
