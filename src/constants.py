@@ -17,18 +17,22 @@ brain = Brain()
 
 DIAMETER = 9.92 #10.1#9.93#9.93 # wheel DIAMETER in cm #10.4
 BASELINE = 30.1 #29#29.4 # baseline measurement in cm 
- 
+DISTANCE_THRESHOLD = 15 # default distance threshold in cm for object detection
 # Brain should be defined by default
 brain=Brain()
  
 left_motor = Motor(Ports.PORT1)
 right_motor = Motor(Ports.PORT10)
+distance_sensor = Distance(Ports.PORT7)
+optical_sensor = Optical(Ports.PORT4)
 # reverse left motor so both motors move in the same direction
 left_motor.set_reversed(True)
 MAX_SPEED_RMP = 200 # rpm
 MAX_SPEED_PERCENT = 100
 
 MOTOR_RPM_CALIBRATOR = 1
+TIME_CORRECTION = -0.2
+THETA_CORRECTION = 10
 
 velocity_values = [15, 20, 25, 30, 35, 40, 45, 50] #%
 

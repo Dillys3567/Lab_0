@@ -23,6 +23,8 @@ brain = Brain()
 from menu import *
 from part1_functions import *
 from part2_functions import *
+from part3_functions import *
+
 
 
 
@@ -37,22 +39,21 @@ def main():
 
     # rename buttons
     renameButton(1, "200cm line")
-    renameButton(2, "Turn Left")
+    renameButton(2, "L path")
     renameButton(3, "Turn Right")
     renameButton(4, "Spin 90L")
     renameButton(5, "Spin 90R")
     renameButton(6, "House Shape")
     renameButton(7, "S path 1")
     renameButton(8, "S path 2")
-
-    
+    renameButton(9, "Object Detection")
 
     button = get_button()
 
     if button == 1:
         programSelector('straight_line')
     elif button == 2:
-        programSelector('turnL')
+        L_path_with_distance_and_colour_sensor()
     elif button == 3:
         programSelector('turnR')
     elif button == 4:
@@ -66,7 +67,6 @@ def main():
     elif button == 8:
         move_in_s_shape_with_tracking()
     elif button == 9:
-        NOPROGRAM(9)
-        # pass
+        move_in_s_shape_with_tracking_object_detection()
  
 main()

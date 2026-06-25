@@ -25,7 +25,7 @@ def move_in_s_shape():
     brain.screen.print("moving in s shape..")
     brain.screen.new_line()
     R = 50
-    theta = 270
+    theta = 270 - THETA_CORRECTION #
     arc_time = 7.5 # s
     arc_length = (2 * math.pi * R * theta)/360
     v = arc_length/arc_time
@@ -60,7 +60,7 @@ def move_in_s_shape():
     brain.screen.new_line()
     wait(10, SECONDS)
 
-
+#=================================lab0 part 2.d=====================================================
 def move_in_s_shape_with_tracking():
     brain.timer.reset()
     brain.screen.clear_screen()
@@ -94,14 +94,14 @@ def move_in_s_shape_with_tracking():
     while brain.timer.time(SECONDS) - start_time < 2 * arc_time:
         elapsed = brain.timer.time(SECONDS) - start_time
 
-        if elapsed < arc_time:
+        if elapsed < arc_time-TIME_CORRECTION:
             w_arc = w
             left_motor_speed = right_speed
             right_motor_speed = left_speed
         else:
             w_arc = -w
+            right_motor_speed = right_speed # wunda
             left_motor_speed = left_speed
-            right_motor_speed = right_speed
 
         left_motor.spin(FORWARD, left_motor_speed, RPM)
         right_motor.spin(FORWARD, right_motor_speed, RPM)
