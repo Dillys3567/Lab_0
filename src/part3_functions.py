@@ -185,13 +185,13 @@ def move_in_s_shape_with_tracking_object_detection():
     brain.screen.print("x_init: %.2f, y_init: %.2f, theta_init: %.2f"%(x, y, theta*180/math.pi))
     brain.screen.new_line()
 
-
-    total_time = 2 * arc_time
+    total_arc_time = 2 * arc_time
+    total_time = total_arc_time + 0.6
     object_detected = False
 
     t=0
     start_time = brain.timer.time(SECONDS)
-    while t <= total_time+0.55:
+    while t <= total_time:
         object_detected = is_object_close()
         
         if object_detected:
@@ -201,16 +201,17 @@ def move_in_s_shape_with_tracking_object_detection():
 
         if t < arc_time:
             w_arc = w
-            left_motor_speed = right_speed
-            right_motor_speed = left_speed
-        else:
-            w_arc = -w
             left_motor_speed = left_speed
             right_motor_speed = right_speed
+        else:
+            w_arc = -w
+            left_motor_speed = right_speed
+            right_motor_speed = left_speed
 
         left_motor.spin(FORWARD, left_motor_speed, RPM)
         right_motor.spin(FORWARD, right_motor_speed, RPM)
 
+        # if total_time<= total_arc_time:
         x += v * math.cos(theta) * dt
         y += v * math.sin(theta) * dt
         theta += w_arc * dt
@@ -218,11 +219,11 @@ def move_in_s_shape_with_tracking_object_detection():
         wait(dt, SECONDS)
         t += dt
 
-    left_motor.stop(BRAKE)
-    right_motor.stop(BRAKE)
+    left_motor.stop(COAST)
+    right_motor.stop(COAST)
     stop_time = brain.timer.time(SECONDS)
     run_time = stop_time - start_time 
-    brain.screen.print("x_end: %.2f, y_end: %.2f, theta_end: %.2f"%(x, y, theta*180/math.pi))
+    # brain.screen.print("x_end: %.2f, y_end: %.2f, theta_end: %.2f"%(x, y, theta*180/math.pi))
     brain.screen.new_line()
     brain.screen.print("run time =  %.2f"%(run_time))
     brain.screen.new_line()

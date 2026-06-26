@@ -24,8 +24,7 @@ from menu import *
 from part1_functions import *
 from part2_functions import *
 from part3_functions import *
-
-
+from part4_functions import *
 
 
     
@@ -41,8 +40,8 @@ def main():
     renameButton(1, "200cm line")
     renameButton(2, "L path")
     renameButton(3, "Turn Right")
-    renameButton(4, "Spin 90L")
-    renameButton(5, "Spin 90R")
+    renameButton(4, "Trajectory")
+    renameButton(5, "Custom Trajectory")
     renameButton(6, "House Shape")
     renameButton(7, "S path 1")
     renameButton(8, "S path 2")
@@ -57,9 +56,9 @@ def main():
     elif button == 3:
         programSelector('turnR')
     elif button == 4:
-        programSelector('spinL')
+        move_trajectory()
     elif button == 5:
-        programSelector('spinR')
+        custom_move_trajectory()
     elif button == 6:
         programSelector('house')
     elif button == 7:

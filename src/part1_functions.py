@@ -18,11 +18,11 @@ def turn(turn_angle, speed,direction):
     degrees = (2 * BASELINE * turn_angle)/DIAMETER
     #the directions are reversed because it was observed that the robot direction of rotation of the 
     #motor shaft either right or left was opposite to the direction of turn of the robot
-    if direction is RIGHT: #  
+    if direction is LEFT: #  
         stop_motor(LEFT)
         right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
         stop_motors()
-    elif direction is LEFT:
+    elif direction is RIGHT:
         stop_motor(RIGHT)
         left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
         stop_motors()
@@ -33,11 +33,11 @@ def spin(degrees, speed,direction):
     degrees = (BASELINE * degrees)/DIAMETER
     # the directions are reversed because it was observed that the robot direction of rotation of the 
     # motor shaft either right or left was opposite to the direction of turn of the robot
-    if direction is RIGHT:
+    if direction is LEFT:
         left_motor.spin_for(REVERSE, degrees, DEGREES, speed, PERCENT,wait=False)
         right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
         stop_motors()
-    elif direction is LEFT:
+    elif direction is RIGHT:
         left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
         right_motor.spin_for(REVERSE, degrees, DEGREES, speed, PERCENT,wait=True)
         stop_motors()

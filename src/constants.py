@@ -23,10 +23,10 @@ brain=Brain()
  
 left_motor = Motor(Ports.PORT1)
 right_motor = Motor(Ports.PORT10)
-distance_sensor = Distance(Ports.PORT7)
-optical_sensor = Optical(Ports.PORT4)
+distance_sensor = Distance(Ports.PORT3)
+optical_sensor = Optical(Ports.PORT2)
 # reverse left motor so both motors move in the same direction
-left_motor.set_reversed(True)
+right_motor.set_reversed(True)
 MAX_SPEED_RMP = 200 # rpm
 MAX_SPEED_PERCENT = 100
 
@@ -103,3 +103,5 @@ def NOPROGRAM(slotNumber=0):
     else:
         brain.screen.print("No program assigned to Button %d"%(slotNumber))
     wait(3, SECONDS)
+
+
