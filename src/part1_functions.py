@@ -16,8 +16,6 @@ def drive_straight(distance, speed):
 def turn(turn_angle, speed,direction):
     speed = clamp_speed_percent(speed)
     degrees = (2 * BASELINE * turn_angle)/DIAMETER
-    #the directions are reversed because it was observed that the robot direction of rotation of the 
-    #motor shaft either right or left was opposite to the direction of turn of the robot
     if direction is LEFT: #  
         stop_motor(LEFT)
         right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
