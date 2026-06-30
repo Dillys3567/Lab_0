@@ -14,7 +14,7 @@ brain = Brain()
 
 #===================================robot==================================================
 
-
+ROBOT_RADIUS = 24
 DIAMETER = 9.92 #10.1#9.93#9.93 # wheel DIAMETER in cm #10.4
 BASELINE = 30.1 #29#29.4 # baseline measurement in cm 
 DISTANCE_THRESHOLD = 15 # default distance threshold in cm for object detection
@@ -104,4 +104,16 @@ def NOPROGRAM(slotNumber=0):
         brain.screen.print("No program assigned to Button %d"%(slotNumber))
     wait(3, SECONDS)
 
+def spin_left_motor(left_speed,unit=RPM):
+    if (left_speed<0):
+        left_motor.spin(REVERSE, abs(left_speed), unit)
+    else:
+        left_motor.spin(FORWARD, abs(left_speed), unit)
+
+
+def spin_right_motor(right_speed,unit=RPM):
+    if(right_speed<0):
+        right_motor.spin(REVERSE, abs(right_speed), unit)
+    else:
+        right_motor.spin(FORWARD, abs(right_speed), unit)
 

@@ -25,9 +25,9 @@ from part1_functions import *
 from part2_functions import *
 from part3_functions import *
 from part4_functions import *
+from path_planning import *
 
 
-    
 
 #=============================main====================================================
 def main():
@@ -42,9 +42,9 @@ def main():
     renameButton(3, "Turn Right")
     renameButton(4, "Trajectory")
     renameButton(5, "Custom Trajectory")
-    renameButton(6, "House Shape")
-    renameButton(7, "S path 1")
-    renameButton(8, "S path 2")
+    renameButton(6, "Path planning")
+    renameButton(7, "Left turn")
+    renameButton(8, "Right turn")
     renameButton(9, "Object Detection")
 
     button = get_button()
@@ -60,11 +60,14 @@ def main():
     elif button == 5:
         custom_move_trajectory()
     elif button == 6:
-        programSelector('house')
+        path_planning()
+        # programSelector('house')
     elif button == 7:
-        move_in_s_shape()
+        programSelector('turnL')
+        #move_in_s_shape()
     elif button == 8:
-        move_in_s_shape_with_tracking()
+        programSelector('turnR')
+        #move_in_s_shape_with_tracking()
     elif button == 9:
         move_in_s_shape_with_tracking_object_detection()
  
