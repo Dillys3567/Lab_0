@@ -104,4 +104,14 @@ def NOPROGRAM(slotNumber=0):
         brain.screen.print("No program assigned to Button %d"%(slotNumber))
     wait(3, SECONDS)
 
+def spin_left_motor(left_speed, unit=RPM):
+        if (left_speed<0):
+            left_motor.spin(REVERSE, abs(left_speed), unit)
+        else:
+            left_motor.spin(FORWARD, abs(left_speed), unit)
 
+def spin_right_motor(right_speed, unit=RPM):
+        if (right_speed<0):
+            right_motor.spin(REVERSE, abs(right_speed), unit)
+        else:
+            right_motor.spin(FORWARD, abs(right_speed), unit)

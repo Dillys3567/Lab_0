@@ -7,10 +7,10 @@ from constants import *
 def drive_straight(distance, speed):
     speed = clamp_speed_percent(speed)
     degrees = distance_to_degrees(distance)
-    left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
-    right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-    stop_motors()
-
+    right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
+    left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
+    # left_motor.spin_for(FORWARD, degrees, DEGREES, 1.03*speed, PERCENT,wait=False)
+    stop_motors(COAST)
  
 # turn robot by some angle in either left or right direction
 def turn(turn_angle, speed,direction):
@@ -103,15 +103,18 @@ def programSelector(program):
         brain.screen.print("Turning %d degrees"%(turn_angle))
         turn(turn_angle,20,direction)
     elif program == 'spinL':
-        turn_angle = 90
+        turn_angle = 180
         direction = LEFT
         brain.screen.print("Spin %d degrees Left"%(turn_angle))
         spin(turn_angle,20,direction)
+        wait(5, SECONDS)
+
     elif program == 'spinR':
-        turn_angle = 90
+        turn_angle = 180
         direction = RIGHT
         brain.screen.print("Spin %d degrees Right"%(turn_angle))
         spin(turn_angle,20,direction)
+        wait(5, SECONDS)
     
     elif program == 'square':
         direction = LEFT

@@ -13,11 +13,11 @@ def move_trajectory():
     # in positions and angles respectively
     w_ave= 1.85 #rad/s
     v_ave = 26.21#cm/s
-    k_v_init = v_ave / d_error_init
-    k_w_init = w_ave / theta_error_init
+    k_v_init = v_ave / d_error_init # 0.37
+    k_w_init = w_ave / theta_error_init # 2.355
 
-    k_v = k_v_init
-    k_omega = k_w_init
+    k_v = 0.5
+    k_omega = 2.38
 
     # Time parameters
     dt = 0.01  # Time step
@@ -30,7 +30,6 @@ def move_trajectory():
     theta = 0.0
 
     # Define the trajectory (waypoints)
-
     waypoints = [
         [0, 0],
         [1, 1],
@@ -76,7 +75,7 @@ def move_trajectory():
 
         # Normalize angle error to be within -pi to pi
         angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
-        print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
+        # print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
         
         # Compute linear and angular velocities
         # basically using p control for velocity control
@@ -95,15 +94,8 @@ def move_trajectory():
         left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100)
         right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100)
 
-        
-        if (left_speed<0):
-            left_motor.spin(REVERSE, abs(left_speed), RPM)
-        else:
-            left_motor.spin(FORWARD, abs(left_speed), RPM)
-        if(right_speed<0):
-            right_motor.spin(REVERSE, abs(right_speed), RPM)
-        else:
-            right_motor.spin(FORWARD, abs(right_speed), RPM)
+        spin_right_motor(right_speed)
+        spin_left_motor(left_speed)
 
 
         # Update robot's position and orientation
@@ -139,7 +131,7 @@ def custom_move_trajectory():
     k_omega = k_w_init
 
     # Time parameters
-    dt = 0.01  # Time step
+    dt = 0.007  # Time step
     total_time = 1000  # Total simulation time
     close_enough = 0.5 # How close is close enough to a waypoint?
 
@@ -154,8 +146,7 @@ def custom_move_trajectory():
         [1, 1],
         [2, 0],
         [3, 0],
-        [3, 1],
-
+        [3, 1]
     ]
     
     waypoints = [[x*distance_unit for x in row] for row in waypoints]
@@ -196,7 +187,7 @@ def custom_move_trajectory():
 
         # Normalize angle error to be within -pi to pi
         angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
-        print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
+        # print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
         
         # Compute linear and angular velocities
         # basically using p control for velocity control
@@ -215,20 +206,11 @@ def custom_move_trajectory():
         # TO DO
         # limit the wheel velocities to "allowable" values based on
         # robot constraints and control the wheels.
-        left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100)
-        right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100)
+        left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100) # rpm
+        right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100) # rpm
 
-        
-        if (left_speed<0):
-            left_motor.spin(REVERSE, abs(left_speed), RPM)
-        else:
-            left_motor.spin(FORWARD, abs(left_speed), RPM)
-        if(right_speed<0):
-            right_motor.spin(REVERSE, abs(right_speed), RPM)
-        else:
-            right_motor.spin(FORWARD, abs(right_speed), RPM)
-
-
+        spin_right_motor(right_speed)
+        spin_left_motor(left_motor)
         # Update robot's position and orientation
         x += v * math.cos(theta) * dt
         y += v * math.sin(theta) * dt

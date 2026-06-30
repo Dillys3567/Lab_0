@@ -1,6 +1,6 @@
 """
-    Group: 2
-    Members: Norvisi, Divine, Wundabli, Dillys
+ Group: 2
+ Members: Norvisi, Divine, Wundabli, Dillys
  we discovered that VEX V5 does not user modules so to fix this issue we added a
  builder called build_script.py, please upload build.py instead of main.py to vex
  
@@ -10,15 +10,6 @@
  3. upload build.py to VEX
 
 """
-# library imports
-from vex import *
-import math
-# import numpy as np
-# import matplotlib.pyplot as plt
- 
- 
-brain = Brain()
-
 
 
 # ==================================================
@@ -136,8 +127,17 @@ def NOPROGRAM(slotNumber=0):
         brain.screen.print("No program assigned to Button %d"%(slotNumber))
     wait(3, SECONDS)
 
+def spin_left_motor(left_speed, unit=RPM):
+        if (left_speed<0):
+            left_motor.spin(REVERSE, abs(left_speed), unit)
+        else:
+            left_motor.spin(FORWARD, abs(left_speed), unit)
 
-
+def spin_right_motor(right_speed, unit=RPM):
+        if (right_speed<0):
+            right_motor.spin(REVERSE, abs(right_speed), unit)
+        else:
+            right_motor.spin(FORWARD, abs(right_speed), unit)
 # ==================================================
 # END constants.py
 # ==================================================
@@ -229,10 +229,10 @@ def get_button():
 def drive_straight(distance, speed):
     speed = clamp_speed_percent(speed)
     degrees = distance_to_degrees(distance)
-    left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
-    right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
-    stop_motors()
-
+    right_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=False)
+    left_motor.spin_for(FORWARD, degrees, DEGREES, speed, PERCENT,wait=True)
+    # left_motor.spin_for(FORWARD, degrees, DEGREES, 1.03*speed, PERCENT,wait=False)
+    stop_motors(COAST)
  
 # turn robot by some angle in either left or right direction
 def turn(turn_angle, speed,direction):
@@ -325,15 +325,18 @@ def programSelector(program):
         brain.screen.print("Turning %d degrees"%(turn_angle))
         turn(turn_angle,20,direction)
     elif program == 'spinL':
-        turn_angle = 90
+        turn_angle = 180
         direction = LEFT
         brain.screen.print("Spin %d degrees Left"%(turn_angle))
         spin(turn_angle,20,direction)
+        wait(5, SECONDS)
+
     elif program == 'spinR':
-        turn_angle = 90
+        turn_angle = 180
         direction = RIGHT
         brain.screen.print("Spin %d degrees Right"%(turn_angle))
         spin(turn_angle,20,direction)
+        wait(5, SECONDS)
     
     elif program == 'square':
         direction = LEFT
@@ -538,161 +541,6 @@ def sense_colour():
 # ==================================================
 
 
-# def move_in_s_shape_with_tracking_object_detection():
-#     brain.screen.clear_screen()
-#     brain.screen.set_cursor(1, 1)
-#     brain.screen.print("moving in s shape while tracking position..")
-#     brain.screen.new_line()
-#     R = 50 # cm
-#     theta_arc = 270
-#     arc_time = 7.5 # s
-#     arc_length = (2 * math.pi * R * theta_arc)/360
-#     v = arc_length/arc_time
-#     w = v/R
-#     vl = v - (w * BASELINE/2)
-#     vr = v + (w * BASELINE/2)
-#     wl = abs(2*vl/DIAMETER)
-#     wr = abs(2*vr/DIAMETER)
-#     left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi))
-#     right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi))
-
-#     x = 100 # x start
-#     y = 150 # y start
-#     theta = math.pi/2
-
-#     dt = 0.001
-
-#     brain.screen.print("x_init: %.2f, y_init: %.2f, theta_init: %.2f"%(x, y, theta*180/math.pi))
-#     brain.screen.new_line()
-
-#     brain.timer.reset()
-#     start_time = brain.timer.time(SECONDS)
-
-#     total_time = 2 * arc_time
-#     object_detected = False
-#     break_time = 0
-#     total_break_time = 0
-
-#     while brain.timer.time(SECONDS) - start_time < total_time:
-#         object_detected = is_object_close()
-        
-#         if object_detected:
-#             time_at_detection = brain.timer.time(SECONDS)
-#             brain.screen.print("Object detected! Stopping the robot.")
-#             stop_motors()
-
-#             while is_object_close():
-#                 pass
-
-#             break_time = brain.timer.time(SECONDS) - time_at_detection
-        
-#         elapsed = brain.timer.time(SECONDS) - start_time - break_time
-#         total_time += break_time
-#         total_break_time += break_time
-#         break_time = 0
-
-#         if elapsed < arc_time - TIME_CORRECTION:
-#             w_arc = w
-#             left_motor_speed = right_speed
-#             right_motor_speed = left_speed
-#         else:
-#             w_arc = -w
-#             left_motor_speed = left_speed
-#             right_motor_speed = right_speed
-
-#         left_motor.spin(FORWARD, left_motor_speed, RPM)
-#         right_motor.spin(FORWARD, right_motor_speed, RPM)
-
-#         x += v * math.cos(theta) * dt
-#         y += v * math.sin(theta) * dt
-#         theta += w_arc * dt
-
-#         wait(dt, SECONDS)
-
-#     left_motor.stop(BRAKE)
-#     right_motor.stop(BRAKE)
-#     stop_time = brain.timer.time(SECONDS)
-#     run_time = stop_time - start_time + total_break_time
-#     brain.screen.print("x_end: %.2f, y_end: %.2f, theta_end: %.2f"%(x, y, theta*180/math.pi))
-#     brain.screen.new_line()
-#     brain.screen.print("run time =  %.2f"%(run_time))
-#     brain.screen.new_line()
-#     brain.screen.print("s shape 2 end")
-#     wait(20, SECONDS)
-
-
-# def move_in_s_shape_with_tracking_object_detection():
-#     brain.screen.clear_screen()
-#     brain.screen.set_cursor(1, 1)
-#     brain.screen.print("moving in s shape while detecting objects..")
-#     brain.screen.new_line()
-#     R = 50 # cm
-#     theta_arc = 270
-#     arc_time = 7.5 # s
-#     arc_length = (2 * math.pi * R * theta_arc)/360
-#     v = arc_length/arc_time
-#     w = v/R
-#     vl = v - (w * BASELINE/2)
-#     vr = v + (w * BASELINE/2)
-#     wl = abs(2*vl/DIAMETER)
-#     wr = abs(2*vr/DIAMETER)
-#     left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi))
-#     right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi))
-
-#     x = 100 # x start
-#     y = 150 # y start
-#     theta = math.pi/2
-
-#     dt = 0.008
-
-#     brain.screen.print("x_init: %.2f, y_init: %.2f, theta_init: %.2f"%(x, y, theta*180/math.pi))
-#     brain.screen.new_line()
-
-
-#     total_time = 2 * arc_time
-#     object_detected = False
-
-#     t=0
-#     start_time = brain.timer.time(SECONDS)
-#     while t <= total_time+0.3:
-#         object_detected = is_object_close()
-        
-#         if object_detected:
-#             stop_motors()
-#             brain.screen.print("Object detected! Stopping the robot.")
-#             while is_object_close():
-#                 pass
-
-#         if t < arc_time:
-#             w_arc = w
-#             left_motor_speed = right_speed
-#             right_motor_speed = left_speed
-#         else:
-#             w_arc = -w
-#             left_motor_speed = left_speed
-#             right_motor_speed = right_speed
-
-#         left_motor.spin(FORWARD, left_motor_speed, RPM)
-#         right_motor.spin(FORWARD, right_motor_speed, RPM)
-
-#         x += v * math.cos(theta) * dt
-#         y += v * math.sin(theta) * dt
-#         theta += w_arc * dt
-
-#         wait(dt, SECONDS)
-#         t += dt
-
-#     left_motor.stop(BRAKE)
-#     right_motor.stop(BRAKE)
-#     stop_time = brain.timer.time(SECONDS)
-#     run_time = stop_time - start_time 
-#     brain.screen.print("x_end: %.2f, y_end: %.2f, theta_end: %.2f"%(x, y, theta*180/math.pi))
-#     brain.screen.new_line()
-#     brain.screen.print("run time =  %.2f"%(run_time))
-#     brain.screen.new_line()
-#     brain.screen.print("s shape 2 end")
-#     wait(20, SECONDS)
-
 
 def move_in_s_shape_with_tracking_object_detection():
     brain.screen.clear_screen()
@@ -829,11 +677,11 @@ def move_trajectory():
     # in positions and angles respectively
     w_ave= 1.85 #rad/s
     v_ave = 26.21#cm/s
-    k_v_init = v_ave / d_error_init
-    k_w_init = w_ave / theta_error_init
+    k_v_init = v_ave / d_error_init # 0.37
+    k_w_init = w_ave / theta_error_init # 2.355
 
-    k_v = k_v_init
-    k_omega = k_w_init
+    k_v = 0.5
+    k_omega = 2.38
 
     # Time parameters
     dt = 0.01  # Time step
@@ -846,7 +694,6 @@ def move_trajectory():
     theta = 0.0
 
     # Define the trajectory (waypoints)
-
     waypoints = [
         [0, 0],
         [1, 1],
@@ -854,24 +701,12 @@ def move_trajectory():
         [3, 1],
         [4, 0]
     ]
-    # waypoints = [
-    #     [0, 0],
-    #     [2, 2],
-    #     [2, 0],
-    #     [0, 0]
-    # ]
     
     waypoints = [[x*distance_unit for x in row] for row in waypoints]
 
     next_wp_ind = 0
 
-    # # Storage for plotting
-    # x_traj = [x]
-    # y_traj = [y]
-
     # Simulate the robot following the trajectory
-
-
     brain.screen.clear_screen()
     brain.screen.set_cursor(1, 1)
     print("follow trajectory...")
@@ -901,14 +736,10 @@ def move_trajectory():
         angle_to_target = math.atan2(nearest_waypoint[1] - y, nearest_waypoint[0] - x)
         angle_error = angle_to_target - theta
 
-    
-        
-    #    print('nearest waypoint: ',nearest_waypoint,
-    #           ' distance=',distance)
 
         # Normalize angle error to be within -pi to pi
         angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
-        print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
+        # print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
         
         # Compute linear and angular velocities
         # basically using p control for velocity control
@@ -916,10 +747,7 @@ def move_trajectory():
         v = k_v * distance
         w = k_omega * angle_error
 
-        
-        # TO DO
-        # for a real robot, we would need to apply inverse kinematics
-        # to get the wheel velocities
+    
     
         vl = v - (w * BASELINE/2)
         vr = v + (w * BASELINE/2)
@@ -927,21 +755,11 @@ def move_trajectory():
         wr = 2*vr/DIAMETER
 
 
-        # TO DO
-        # limit the wheel velocities to "allowable" values based on
-        # robot constraints and control the wheels.
         left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100)
         right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100)
 
-        
-        if (left_speed<0):
-            left_motor.spin(REVERSE, abs(left_speed), RPM)
-        else:
-            left_motor.spin(FORWARD, abs(left_speed), RPM)
-        if(right_speed<0):
-            right_motor.spin(REVERSE, abs(right_speed), RPM)
-        else:
-            right_motor.spin(FORWARD, abs(right_speed), RPM)
+        spin_right_motor(right_speed)
+        spin_left_motor(left_speed)
 
 
         # Update robot's position and orientation
@@ -950,17 +768,8 @@ def move_trajectory():
         theta += w * dt
         t = t+dt
         wait(dt, SECONDS)
-
-
-        
-        # print(f"v={v}, omega={w}, x={x}, y={y}, theta={theta}")
-        # Store the trajectory
-        # x_traj.append(x)
-        # y_traj.append(y)
         
 
-
-    # TO DO: Stop the motors once we break out of the loop!
     stop_motors(BRAKE)
     brain.screen.print("end of trajectory")
     brain.screen.new_line()
@@ -986,7 +795,7 @@ def custom_move_trajectory():
     k_omega = k_w_init
 
     # Time parameters
-    dt = 0.01  # Time step
+    dt = 0.007  # Time step
     total_time = 1000  # Total simulation time
     close_enough = 0.5 # How close is close enough to a waypoint?
 
@@ -996,28 +805,19 @@ def custom_move_trajectory():
     theta = 0.0
 
     # Define the trajectory (waypoints)
-
-
     waypoints = [
         [0, 0],
         [1, 1],
         [2, 0],
         [3, 0],
-        [3, 1],
-
+        [3, 1]
     ]
     
     waypoints = [[x*distance_unit for x in row] for row in waypoints]
 
     next_wp_ind = 0
 
-    # # Storage for plotting
-    # x_traj = [x]
-    # y_traj = [y]
-
     # Simulate the robot following the trajectory
-
-
     brain.screen.clear_screen()
     brain.screen.set_cursor(1, 1)
     print("follow trajectory...")
@@ -1048,13 +848,10 @@ def custom_move_trajectory():
         angle_error = angle_to_target - theta
 
     
-        
-    #    print('nearest waypoint: ',nearest_waypoint,
-    #           ' distance=',distance)
 
         # Normalize angle error to be within -pi to pi
         angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
-        print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
+        # print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
         
         # Compute linear and angular velocities
         # basically using p control for velocity control
@@ -1062,10 +859,347 @@ def custom_move_trajectory():
         v = k_v * distance
         w = k_omega * angle_error
 
-        
+    
+    
+        vl = v - (w * BASELINE/2)
+        vr = v + (w * BASELINE/2)
+        wl = 2*vl/DIAMETER
+        wr = 2*vr/DIAMETER
+
+
         # TO DO
-        # for a real robot, we would need to apply inverse kinematics
-        # to get the wheel velocities
+        # limit the wheel velocities to "allowable" values based on
+        # robot constraints and control the wheels.
+        left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100) # rpm
+        right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100) # rpm
+
+        spin_right_motor(right_speed)
+        spin_left_motor(left_motor)
+        # Update robot's position and orientation
+        x += v * math.cos(theta) * dt
+        y += v * math.sin(theta) * dt
+        theta += w * dt
+        t = t+dt
+        wait(dt, SECONDS)
+
+    stop_motors(BRAKE)
+    brain.screen.print("end of trajectory")
+    brain.screen.new_line()
+    wait(5, SECONDS)
+# ==================================================
+# END part4_functions.py
+# ==================================================
+
+
+# ==================================================
+# BEGIN part5_functions.py
+# ==================================================
+
+
+# ==================================================
+# BEGIN astar.py
+# ==================================================
+
+# 29th June 2026.  Ayorkor Korsah
+# Code generated with the assistance of ChatGPT
+# A simple implementation of A* with Euclidean costs
+
+# ==================================================
+# BEGIN heapq_vex.py
+# ==================================================
+
+# Simple binary min-heap for VEX V5 (subset of heapq)
+
+def heappush(heap, item):
+    """
+    Push item into heap.
+    heap: list
+    item: comparable tuple like (f_score, node)
+    """
+    heap.append(item)
+    _heapvex_sift_up(heap, len(heap) - 1)
+
+
+def heappop(heap):
+    """
+    Pop smallest item from heap.
+    """
+    if not heap:
+        return []
+
+    _heapvex_swap(heap, 0, len(heap) - 1)
+    item = heap.pop()
+
+    if heap:
+        _heapvex_sift_down(heap, 0)
+
+    return item
+
+
+# ------------------------------------------------------
+# Internal helpers
+# ------------------------------------------------------
+
+def _heapvex_sift_up(heap, i):
+    while i > 0:
+        parent = (i - 1) // 2
+
+        if heap[i][0] < heap[parent][0]:
+            _heapvex_swap(heap, i, parent)
+            i = parent
+        else:
+            break
+
+
+def _heapvex_sift_down(heap, i):
+    n = len(heap)
+
+    while True:
+        left = 2 * i + 1
+        right = 2 * i + 2
+        smallest = i
+
+        if left < n and heap[left][0] < heap[smallest][0]:
+            smallest = left
+
+        if right < n and heap[right][0] < heap[smallest][0]:
+            smallest = right
+
+        if smallest != i:
+            _heapvex_swap(heap, i, smallest)
+            i = smallest
+        else:
+            break
+
+
+def _heapvex_swap(heap, i, j):
+    tmp = heap[i]
+    heap[i] = heap[j]
+    heap[j] = tmp
+# ==================================================
+# END heapq_vex.py
+# ==================================================
+
+import math
+
+# ------------------------------------------------------
+# A* WITH EUCLIDEAN COSTS
+# ------------------------------------------------------
+
+# 8-connected movement
+DIRECTIONS = [
+    (-1, 0),   # up
+    (1, 0),    # down
+    (0, -1),   # left
+    (0, 1),    # right
+    (-1, -1),  # up-left
+    (-1, 1),   # up-right
+    (1, -1),   # down-left
+    (1, 1)     # down-right
+]
+
+
+def euclidean(a, b):
+    return math.sqrt(
+        (a[0] - b[0])**2 +
+        (a[1] - b[1])**2
+    )
+
+
+def reconstruct_path(came_from, current):
+
+    path = [current]
+
+    while current in came_from:
+        current = came_from[current]
+        path.append(current)
+
+    path.reverse()
+    return path
+
+
+def astar(grid, start, goal):
+
+    rows = len(grid)
+    cols = len(grid[0])
+
+    open_set = []
+
+    heappush(open_set, (0, start))
+
+    came_from = {}
+
+    g_score = {start: 0.0}
+
+    open_hash = {start}
+
+
+
+    while open_set:
+
+        result = heappop(open_set)
+        if result == []:
+            break
+
+        f, current = result
+
+        if current not in open_hash:
+            continue
+
+        open_hash.remove(current)
+
+        if current == goal:
+            return reconstruct_path(came_from, current)
+
+        for dr, dc in DIRECTIONS:
+
+            neighbor = (current[0] + dr, current[1] + dc)
+            r, c = neighbor
+
+            if not (0 <= r < rows and 0 <= c < cols):
+                continue
+
+            if grid[r][c] == 1:
+                continue
+
+            movement_cost = euclidean(current, neighbor)
+
+            tentative_g = g_score[current] + movement_cost
+
+            if neighbor not in g_score or tentative_g < g_score[neighbor]:
+
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g
+
+                f_score = tentative_g + euclidean(neighbor, goal)
+
+                heappush(open_set, (f_score, neighbor))
+                open_hash.add(neighbor)
+    return []
+
+    
+# ==================================================
+# END astar.py
+# ==================================================
+
+
+
+grid = [
+#    0  1  2  3  4  5
+    [0, 0, 1, 0, 0, 0],  # 0
+    [1, 0, 1, 1, 1, 0],  # 1
+    [0, 0, 1, 0, 1, 0],  # 2
+    [1, 0, 0, 0, 1, 0],  # 3
+    [0, 1, 1, 1, 0, 0],  # 4
+    [0, 0, 0, 0, 0, 0],  # 5
+]
+
+start = (0, 0)
+goal = (5, 5)
+
+path = astar(grid, start, goal)
+print(path)
+
+
+# grid = [
+#     [0,0,0,0,0,0,0,0,0,0],
+#     [0,0,0,0,1,0,1,1,1,0],
+#     [0,1,1,1,1,0,0,0,1,0],
+#     [0,0,1,0,1,0,0,0,1,0],
+#     [0,0,1,0,1,0,1,0,1,0],
+#     [0,0,1,1,1,1,1,1,1,0],
+#     [0,0,0,0,0,0,0,0,0,0],
+# ]
+
+# start = (0, 0)
+# goal = (6, 9)
+
+# path = astar(grid, start, goal)
+
+# print("Path found:")
+# print(path)
+    
+
+
+
+def path_planning():
+    d_tiles = 100/3  #cm
+    distance_unit = d_tiles
+    d_error_init = math.sqrt(2)* distance_unit
+    theta_error_init = math.pi/4
+    
+    # Control gains
+    # We will use p-control to set the linear &
+    # angular velocities of the robot proportional to the errors
+    # in positions and angles respectively
+    w_ave= 1.85 #rad/s
+    v_ave = 26.21#cm/s
+    k_v_init = v_ave / d_error_init
+    k_w_init = w_ave / theta_error_init
+
+    k_v = 0.5
+    k_omega = 2.38
+
+    # Time parameters
+    dt = 0.01  # Time step
+    total_time = 1000  # Total simulation time
+    close_enough = 0.5 # How close is close enough to a waypoint?
+
+    # Initial robot state (position and orientation)
+    x = 0.0
+    y = 0.0
+    theta = 0.0
+
+    # Define the trajectory (waypoints)
+
+    
+    waypoints = [[(x+0.5)*distance_unit for x in row] for row in path]
+
+    next_wp_ind = 0
+
+    # Simulate the robot following the trajectory
+    brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
+    print("Path Planning...")
+    brain.screen.print("Path planning...")
+    brain.screen.new_line()
+    t = 0
+    while t <= total_time:
+
+        # if we are close enough to the next waypoint on the 
+        # trajectory, move to the next waypoint
+        waypoint_x = waypoints[next_wp_ind][0] 
+        waypoint_y = waypoints[next_wp_ind][1] 
+        dist_to_waypoint = math.sqrt((waypoint_x - x)**2 + (waypoint_y - y)**2)
+        if (dist_to_waypoint < close_enough):
+            next_wp_ind += 1
+            brain.screen.print("At waypoint x=%.2f, y=%.2f"%(x,y))
+            brain.screen.new_line()
+
+        #Break if the robot has reached the final waypoint
+        if (next_wp_ind >= len(waypoints)):
+            break
+
+        nearest_waypoint = waypoints[next_wp_ind]
+        
+        # Compute the control inputs
+        distance = math.sqrt((nearest_waypoint[0] - x)**2 + (nearest_waypoint[1] - y)**2)
+        angle_to_target = math.atan2(nearest_waypoint[1] - y, nearest_waypoint[0] - x)
+        angle_error = angle_to_target - theta
+
+    
+
+        # Normalize angle error to be within -pi to pi
+        angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
+        # print("theta: ",theta,  "angle error: ", angle_error * 180/math.pi, "distance: ", distance)
+        
+        # Compute linear and angular velocities
+        # basically using p control for velocity control
+        # -- we are making the target velocity proportional to the error
+        v = k_v * distance
+        w = k_omega * angle_error
+
+    
     
         vl = v - (w * BASELINE/2)
         vr = v + (w * BASELINE/2)
@@ -1079,15 +1213,8 @@ def custom_move_trajectory():
         left_speed = clamp_speed_RPM(wl * 60/(2 * math.pi),100)
         right_speed = clamp_speed_RPM(wr * 60/(2 * math.pi),100)
 
-        
-        if (left_speed<0):
-            left_motor.spin(REVERSE, abs(left_speed), RPM)
-        else:
-            left_motor.spin(FORWARD, abs(left_speed), RPM)
-        if(right_speed<0):
-            right_motor.spin(REVERSE, abs(right_speed), RPM)
-        else:
-            right_motor.spin(FORWARD, abs(right_speed), RPM)
+        spin_right_motor(right_speed)
+        spin_left_motor(left_speed)
 
 
         # Update robot's position and orientation
@@ -1097,22 +1224,29 @@ def custom_move_trajectory():
         t = t+dt
         wait(dt, SECONDS)
 
-
-        
-        # print(f"v={v}, omega={w}, x={x}, y={y}, theta={theta}")
-        # Store the trajectory
-        # x_traj.append(x)
-        # y_traj.append(y)
-        
-
-
-    # TO DO: Stop the motors once we break out of the loop!
-    stop_motors(BRAKE)
+    stop_motors(COAST)
     brain.screen.print("end of trajectory")
     brain.screen.new_line()
     wait(5, SECONDS)
+
+
+# def update_grid_with_obstacle(grid, ox, oy, robot_radius, cell_size):
+#     inflate = math.ceil(robot_radius / cell_size)
+
+#     r, c = world_to_grid(ox, oy)
+
+#     for i in range(-inflate, inflate + 1):
+#         for j in range(-inflate, inflate + 1):
+
+#             if math.sqrt(i*i + j*j) <= inflate:
+
+#                 nr = r + i
+#                 nc = c + j
+
+#                 if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
+#                     grid[nr][nc] = 1
 # ==================================================
-# END part4_functions.py
+# END part5_functions.py
 # ==================================================
 
 
@@ -1129,13 +1263,17 @@ def main():
     # rename buttons
     renameButton(1, "200cm line")
     renameButton(2, "L path")
-    renameButton(3, "Turn Right")
+    renameButton(3, "Path Planning")
     renameButton(4, "Trajectory")
     renameButton(5, "Custom Trajectory")
-    renameButton(6, "House Shape")
-    renameButton(7, "S path 1")
-    renameButton(8, "S path 2")
-    renameButton(9, "Object Detection")
+    renameButton(6, "TurnL")
+    renameButton(7, "TurnR")
+    renameButton(8, "SpinL")
+    renameButton(9, "spinR")
+    # renameButton(6, "House Shape")
+    # renameButton(7, "S path 1")
+    # renameButton(8, "S path 2")
+    # renameButton(9, "Object Detection")
 
     button = get_button()
 
@@ -1144,18 +1282,22 @@ def main():
     elif button == 2:
         L_path_with_distance_and_colour_sensor()
     elif button == 3:
-        programSelector('turnR')
+        path_planning()
     elif button == 4:
         move_trajectory()
     elif button == 5:
         custom_move_trajectory()
     elif button == 6:
-        programSelector('house')
+        # programSelector('house')
+        programSelector("turnL")
     elif button == 7:
-        move_in_s_shape()
+        # move_in_s_shape()
+        programSelector("turnR")
     elif button == 8:
-        move_in_s_shape_with_tracking()
+        # move_in_s_shape_with_tracking()
+        programSelector("spinL")
     elif button == 9:
-        move_in_s_shape_with_tracking_object_detection()
+        # move_in_s_shape_with_tracking_object_detection()
+        programSelector("spinR")
  
 main()
